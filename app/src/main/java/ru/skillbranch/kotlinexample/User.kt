@@ -32,7 +32,7 @@ class User private constructor(
 
     var login: String
         set(value) {
-            _login = value?.toLowerCase()
+            _login = value.toLowerCase()
         }
         get() = _login!!
 
@@ -122,7 +122,7 @@ class User private constructor(
 
     private fun String.md5(): String {
         val md = MessageDigest.getInstance("MD5")
-        val digest = md.digest(toByteArray()) //16 byte
+        val digest = md.digest(this.toByteArray()) //16 byte
         val hexString = BigInteger(1, digest).toString(16)
         return hexString.padStart(32, '0')
     }
@@ -138,12 +138,7 @@ class User private constructor(
 
             return when {
                 !phone.isNullOrBlank() -> User(firstName, lastName, phone)
-                !email.isNullOrBlank() && !password.isNullOrBlank() -> User(
-                    firstName,
-                    lastName,
-                    email,
-                    password
-                )
+                !email.isNullOrBlank() && !password.isNullOrBlank() -> User(firstName, lastName, email, password)
                 else -> throw IllegalArgumentException("Email or phone must be not null or blank")
             }
         }
@@ -155,7 +150,8 @@ class User private constructor(
                     when (size) {
                         1 -> first() to null
                         2 -> first() to last()
-                        else -> throw java.lang.IllegalArgumentException("Full name must contains only first name and last name, current split result $this")
+                        else -> throw IllegalArgumentException("Full name must contains only first name " +
+                                "and last name, current split result ${this@fullNameToPair}")
                     }
                 }
         }
